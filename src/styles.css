@@ -1,0 +1,275 @@
+/* LODESTAR LS-8 — 图纸风外观 */
+:root {
+  --cream: #f3eee1;
+  --paper: #fbf8ee;
+  --ink: #232830;
+  --ink-soft: #6d6a5e;
+  --navy: #13233d;
+  --panel: #0f1d31;
+  --panel-line: rgba(243, 238, 225, 0.85);
+  --pink: #e84f8e;
+  --yellow: #e9c93c;
+  --teal: #7fd8d8;
+  --green: #57c46b;
+  --blue: #5b8cff;
+  --orange: #f2a53a;
+  --mono: ui-monospace, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { height: 100%; }
+body {
+  font-family: var(--mono);
+  background: radial-gradient(120% 130% at 20% 0%, #2a2350 0%, #1b1838 45%, #14122b 100%);
+  overflow: hidden;
+  color: var(--ink);
+}
+
+#sheet {
+  position: absolute;
+  inset: 16px;
+  border-radius: 20px;
+  background: var(--cream);
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.55), inset 0 0 0 1px rgba(255, 255, 255, 0.5);
+  overflow: hidden;
+}
+#stage { position: absolute; inset: 0; }
+#stage canvas { display: block; }
+
+#frame-dashed {
+  position: absolute;
+  inset: 12px;
+  border: 1.5px dashed rgba(232, 79, 142, 0.65);
+  border-radius: 12px;
+  pointer-events: none;
+  z-index: 3;
+}
+
+.card {
+  position: absolute;
+  z-index: 6;
+  background: var(--paper);
+  border: 1px solid rgba(35, 40, 48, 0.25);
+  border-radius: 10px;
+  box-shadow: 0 3px 10px rgba(30, 24, 8, 0.18);
+  pointer-events: none;
+}
+#card-title {
+  top: 26px; left: 28px;
+  padding: 10px 14px 9px;
+  max-width: 480px;
+}
+#card-title .t1 { font-size: 12.5px; font-weight: 700; letter-spacing: 0.06em; }
+#card-title .t2 { font-size: 10.5px; color: var(--ink-soft); margin-top: 4px; }
+#card-title .t3 { font-size: 10px; color: #a09c8c; margin-top: 3px; }
+
+#card-status {
+  top: 26px; right: 28px;
+  width: 168px;
+  padding: 10px 14px 11px;
+}
+#card-status .k { font-size: 9.5px; color: var(--ink-soft); letter-spacing: 0.12em; }
+#card-status .mode {
+  font-size: 21px; font-weight: 800; letter-spacing: 0.05em;
+  margin: 1px 0 6px; min-height: 24px;
+}
+#card-status .mode.lock { color: var(--pink); }
+#card-status .row {
+  display: flex; justify-content: space-between; align-items: baseline;
+  font-size: 11px; margin-top: 2px;
+}
+#card-status .row b { font-size: 11.5px; }
+
+#phase-pill {
+  position: absolute;
+  left: 50%; bottom: 10px;
+  transform: translateX(-50%);
+  z-index: 6;
+  display: flex; align-items: center; gap: 8px;
+  background: var(--navy);
+  color: #f2ede2;
+  font-size: 11px; font-weight: 700; letter-spacing: 0.1em;
+  padding: 6px 14px;
+  border-radius: 999px;
+  box-shadow: 0 3px 10px rgba(10, 14, 26, 0.4);
+  pointer-events: none;
+  white-space: nowrap;
+}
+#phase-dot {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--yellow);
+  box-shadow: 0 0 6px currentColor;
+}
+#phase-dot.pink { background: var(--pink); }
+#phase-dot.green { background: var(--green); }
+#phase-dot.blue { background: var(--blue); }
+#phase-dot.teal { background: var(--teal); }
+
+.corner {
+  position: absolute;
+  bottom: 20px;
+  z-index: 6;
+  font-size: 9.5px; letter-spacing: 0.14em;
+  color: rgba(35, 40, 48, 0.72);
+  background: rgba(251, 248, 238, 0.75);
+  padding: 3px 8px;
+  border-radius: 6px;
+  pointer-events: none;
+}
+#corner-left { left: 24px; }
+#corner-right { right: 24px; }
+
+/* ---------- 底部仪表盘 ---------- */
+#dash {
+  position: absolute;
+  left: 22px; right: 22px; bottom: 44px;
+  z-index: 5;
+  display: flex;
+  gap: 10px;
+  pointer-events: none;
+}
+.panel {
+  flex: 1 1 0;
+  min-width: 0;
+  background: var(--panel);
+  border: 1.5px solid var(--panel-line);
+  border-radius: 12px;
+  color: #e8e4d8;
+  overflow: hidden;
+  box-shadow: 0 4px 14px rgba(8, 12, 24, 0.45);
+}
+.panel header {
+  display: flex; align-items: center; gap: 6px;
+  padding: 6px 10px 5px;
+  border-bottom: 1px solid rgba(243, 238, 225, 0.14);
+  font-size: 9.5px; font-weight: 700; letter-spacing: 0.1em;
+}
+.panel header .dot { width: 7px; height: 7px; border-radius: 50%; flex: none; }
+.panel header .meta { margin-left: auto; font-weight: 400; font-size: 8.5px; color: rgba(232, 228, 216, 0.55); letter-spacing: 0.08em; }
+.panel .body { padding: 7px 10px 8px; }
+
+.dot.teal { background: var(--teal); }
+.dot.pink { background: var(--pink); }
+.dot.green { background: var(--green); }
+.dot.blue { background: var(--blue); }
+.dot.orange { background: var(--orange); }
+
+/* 频谱 */
+#c-spec { width: 100%; height: 80px; display: block; border-radius: 4px; }
+.axis { display: flex; justify-content: space-between; font-size: 8px; color: rgba(232,228,216,.5); margin-top: 3px; }
+
+/* IQ */
+#p-iq .body { display: flex; gap: 8px; }
+#c-iq { width: 46%; height: 80px; display: block; border-radius: 4px; flex: none; }
+.iq-stats { flex: 1; display: flex; flex-direction: column; gap: 2px; font-size: 9px; }
+.iq-stats .r { display: flex; justify-content: space-between; color: rgba(232,228,216,.75); }
+.iq-stats .r b { color: #f2eee2; }
+.iq-packets { margin-top: auto; }
+.iq-packets .k { font-size: 8px; color: rgba(232,228,216,.55); letter-spacing: .12em; }
+.iq-packets .v { font-size: 20px; font-weight: 800; letter-spacing: .08em; line-height: 1; }
+.iq-chips { display: flex; gap: 4px; margin-top: 3px; }
+.chip {
+  font-size: 7.5px; letter-spacing: .1em; padding: 1.5px 5px;
+  border: 1px solid rgba(232,228,216,.3); border-radius: 4px; color: rgba(232,228,216,.6);
+}
+.chip.on { border-color: var(--green); color: var(--green); }
+.chip.lock { border-color: var(--pink); color: var(--pink); }
+
+/* 时钟 */
+#p-clock .body { display: flex; gap: 9px; }
+.clk-bars { display: flex; gap: 3px; align-items: flex-end; height: 80px; flex: none; }
+.clk-bars i {
+  width: 9px; height: 100%;
+  background: rgba(232,228,216,.1);
+  border-radius: 2px;
+  position: relative;
+  overflow: hidden;
+}
+.clk-bars i b {
+  position: absolute; left: 0; right: 0; bottom: 0;
+  height: 0%; background: linear-gradient(180deg, #9fe8c8, var(--green));
+  transition: height .4s;
+  border-radius: 2px;
+}
+.clk-right { flex: 1; display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.clk-row { display: flex; align-items: center; gap: 6px; font-size: 8.5px; color: rgba(232,228,216,.7); }
+#c-clock { width: 40px; height: 40px; flex: none; }
+.clk-ppm { margin-top: auto; }
+.clk-ppm .v { font-size: 21px; font-weight: 800; line-height: 1; }
+.clk-ppm .v small { font-size: 10px; font-weight: 400; color: rgba(232,228,216,.6); }
+.clk-temp { font-size: 8.5px; color: rgba(232,228,216,.65); }
+.clk-temp b { color: #f2eee2; }
+
+/* 电源轨 */
+.rail-row { display: flex; align-items: center; gap: 6px; font-size: 8.5px; margin: 3px 0; }
+.rail-row .name { width: 44px; color: rgba(232,228,216,.75); flex: none; }
+.rail-bar { flex: 1; height: 7px; background: rgba(232,228,216,.12); border-radius: 4px; overflow: hidden; }
+.rail-bar i { display: block; height: 100%; width: 0%; border-radius: 4px; background: var(--blue); transition: width .25s; }
+.rail-row .val { width: 52px; text-align: right; flex: none; color: #f2eee2; }
+.rails-foot { display: flex; align-items: baseline; gap: 8px; margin-top: 6px; }
+.rails-foot .v { font-size: 21px; font-weight: 800; }
+.rails-foot .v small { font-size: 10px; font-weight: 400; color: rgba(232,228,216,.6); }
+.rails-foot .chip { margin-left: auto; }
+
+/* FPGA */
+#p-fpga .body { display: flex; gap: 10px; }
+.fpga-gauge { flex: none; width: 84px; }
+.fpga-gauge svg { width: 84px; height: 66px; display: block; }
+.fpga-gauge .t { text-align: center; font-size: 11px; font-weight: 700; margin-top: -34px; position: relative; }
+.fpga-right { flex: 1; display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.fpga-count { font-size: 19px; font-weight: 800; line-height: 1; }
+.fpga-bars { display: flex; flex-direction: column; gap: 3px; }
+.fbar { display: flex; align-items: center; gap: 6px; font-size: 8px; color: rgba(232,228,216,.7); }
+.fbar .k { width: 36px; flex: none; }
+.fbar .bar { flex: 1; height: 6px; background: rgba(232,228,216,.12); border-radius: 3px; overflow: hidden; }
+.fbar .bar i { display: block; height: 100%; width: 0%; background: linear-gradient(90deg, var(--orange), var(--pink)); transition: width .3s; }
+.fbar .p { width: 30px; text-align: right; flex: none; }
+.fpga-foot { display: flex; justify-content: space-between; font-size: 8px; color: rgba(232,228,216,.55); margin-top: auto; }
+.fpga-foot b { color: var(--yellow); font-weight: 700; }
+
+/* 零件标签 */
+#tags { position: absolute; inset: 0; z-index: 4; pointer-events: none; overflow: hidden; }
+.tag {
+  position: absolute;
+  transform: translate(-50%, -100%);
+  background: var(--yellow);
+  color: #17140a;
+  font-size: 10px; font-weight: 800; letter-spacing: 0.06em;
+  padding: 3px 8px 4px;
+  border-radius: 6px;
+  white-space: nowrap;
+  box-shadow: 0 2px 8px rgba(40, 30, 4, 0.35);
+}
+.tag .sub { display: block; font-size: 8px; font-weight: 600; opacity: 0.75; letter-spacing: 0.04em; }
+.tag.white { background: var(--paper); color: var(--ink); border: 1px solid rgba(35,40,48,.3); }
+.tag::after {
+  content: "";
+  position: absolute; left: 50%; top: 100%;
+  transform: translateX(-50%);
+  border: 5px solid transparent;
+  border-top-color: var(--yellow);
+  border-bottom: none;
+}
+.tag.white::after { border-top-color: var(--paper); }
+.tag.leader { border-top-left-radius: 2px; border-top-right-radius: 2px; }
+
+/* 启动失败 */
+#boot-error {
+  position: absolute; z-index: 30;
+  left: 50%; top: 50%; transform: translate(-50%, -50%);
+  background: var(--paper);
+  border: 1.5px solid rgba(200, 60, 40, 0.7);
+  border-radius: 12px;
+  padding: 18px 22px;
+  max-width: 520px;
+  font-size: 12px;
+  color: #8c2f1e;
+  box-shadow: 0 12px 40px rgba(0,0,0,.4);
+}
+#boot-error b { font-size: 14px; }
+#boot-error p { margin-top: 8px; line-height: 1.6; }
+#boot-error code { background: #efe8d6; padding: 1px 5px; border-radius: 4px; }
+
+@media (max-width: 1100px) {
+  #card-title .t3 { display: none; }
+  .panel header .meta { display: none; }
+}

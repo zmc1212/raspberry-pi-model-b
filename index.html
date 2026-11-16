@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RASPBERRY PI MODEL B · 2012 — 装配模拟</title>
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="src/styles.css">
+</head>
+<body>
+<div id="sheet">
+  <div id="stage"></div>
+  <div id="frame-dashed"></div>
+
+  <div id="card-title" class="card">
+    <div class="t1">RASPBERRY PI&ensp;·&ensp;MODEL B&ensp;·&ensp;BCM2835</div>
+    <div class="t2">Fig. 06 — one ARM11, 256 MB of PoP RAM, and a credit-card-sized computer</div>
+    <div class="t3">拖动旋转 · 滚轮缩放 · 点击零件看标签 · 空格暂停 · R 重播 · 数字键 1-8 跳阶段</div>
+  </div>
+
+  <div id="card-status" class="card">
+    <div class="k">MODE</div>
+    <div class="mode" id="st-mode">OFF</div>
+    <div class="row"><span class="k">ARM</span><b id="st-arm">—</b></div>
+    <div class="row"><span class="k">TEMP</span><b id="st-temp">—</b></div>
+    <div class="row"><span class="k">PARTS</span><b id="st-parts">0 / 15</b></div>
+  </div>
+
+  <div id="phase-pill"><i id="phase-dot"></i><span id="phase-text">STANDBY</span></div>
+  <div id="corner-left" class="corner">RPI-B · 700 MHZ · 256 MB</div>
+  <div id="corner-right" class="corner">BCM2835 · REV 2 · 2012</div>
+
+  <div id="dash"></div>
+
+  <div id="boot-error" hidden>
+    <b>页面未能启动</b>
+    <p id="boot-error-detail">脚本加载失败。</p>
+    <p>双击打不开时，请在本目录运行：<code>python3 tools/serve.py 8080</code>，然后访问 <code>http://127.0.0.1:8080</code></p>
+  </div>
+</div>
+
+<script src="vendor/three.min.js"></script>
+<script src="src/textures.js"></script>
+<script src="src/orbit.js"></script>
+<script src="src/labels.js"></script>
+<script src="src/board.js"></script>
+<script src="src/parts.js"></script>
+<script src="src/cables.js"></script>
+<script src="src/dashboard.js"></script>
+<script src="src/timeline.js"></script>
+<script src="src/main.js"></script>
+<script>
+(function () {
+  var banner = document.getElementById("boot-error");
+  function show(msg) {
+    if (!banner.hidden) return;
+    document.getElementById("boot-error-detail").textContent = msg || "未知错误";
+    banner.hidden = false;
+  }
+  window.LS8_SHOW_BOOT_ERROR = show;
+  window.addEventListener("error", function (e) {
+    show((e.message || "脚本错误") + (e.filename ? "  @" + e.filename.split("/").pop() + ":" + (e.lineno || 0) : ""));
+  });
+  setTimeout(function () {
+    if (!window.LS8_BOOTED) show("入口脚本未能完成初始化（可能被浏览器拦截或路径错误）。");
+  }, 6000);
+})();
+</script>
+</body>
+</html>
