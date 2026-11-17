@@ -227,17 +227,28 @@
     );
   }
 
-  function begin(now, ids) {
+  function begin(now, ids, span) {
     flying = true; phaseOut = false;
     t0 = now;
-    list.forEach(function (p) {
-      if (ids && ids.indexOf(p.id) < 0) return;
+    /* 阶段内归一化错峰：按 ids 顺序均分 span，保证全部零件在本阶段内落座 */
+    var seq = [];
+    if (ids) {
+      ids.forEach(function (id) {
+        for (var k = 0; k < list.length; k++) if (list[k].id === id) { seq.push(list[k]); break; }
+      });
+    } else {
+      seq = list.slice();
+    }
+    var step = seq.length > 1 ? Math.max(0.18, (span || 2.2) / (seq.length - 1)) : 0;
+    seq.forEach(function (p, i) {
+      p.flyDelay = i * step;
       p.begun = true;
+      p.sealed = false;
       p.landed = false; p.tagShown = false;
       p.group.visible = false;
       if (p.line) { LS8.Scene3D.scene.remove(p.line); p.line = null; }
       var pts = [];
-      for (var i = 0; i <= 30; i++) pts.push(bez(p.start, p.midPoint, p.target, i / 30));
+      for (var k = 0; k <= 30; k++) pts.push(bez(p.start, p.midPoint, p.target, k / 30));
       var geo = new THREE.BufferGeometry().setFromPoints(pts);
       var line = new THREE.Line(geo, new THREE.LineDashedMaterial({
         color: 0xff7ab8, dashSize: 0.11, gapSize: 0.075, transparent: true, opacity: 0.8
@@ -276,21 +287,27 @@
     list.forEach(function (p) {
       if (!p.begun || p.sealed) return;
       if (!phaseOut) {
-        var t = (now - t0 - p.delay * 0.62) / p.duration;
-        if (t <= 0) return;
-        if (!p.tagShown) {
-          p.tagShown = true;
-          p.group.visible = true;
-          LS8.Labels.announce(p.id, p.group, p.name, p.sub, performance.now(), 2600);
-        }
-        var tt = easeInOut(Math.min(t, 1));
-        p.group.position.copy(bez(p.start, p.midPoint, p.target, tt));
-        p.group.rotation.y = p.yaw + (1 - tt) * 1.2;
-        if (t >= 1 && !p.landed) {
-          p.landed = true;
-          seatedCount++;
-          if (LS8.Audio) LS8.Audio.play("land");
-          p.lineUntil = now + 0.55;
+        if (p.landed) {
+          /* 已落座：钉在目标位，阶段切换 t0 清零也不重飞 */
+          p.group.position.copy(p.target);
+          p.group.rotation.y = p.yaw;
+        } else {
+          var t = (now - t0 - p.flyDelay) / p.duration;
+          if (t <= 0) return;
+          if (!p.tagShown) {
+            p.tagShown = true;
+            p.group.visible = true;
+            LS8.Labels.announce(p.id, p.group, p.name, p.sub, performance.now(), 2600);
+          }
+          var tt = easeInOut(Math.min(t, 1));
+          p.group.position.copy(bez(p.start, p.midPoint, p.target, tt));
+          p.group.rotation.y = p.yaw + (1 - tt) * 1.2;
+          if (t >= 1 && !p.landed) {
+            p.landed = true;
+            seatedCount++;
+            if (LS8.Audio) LS8.Audio.play("land");
+            p.lineUntil = now + 0.55;
+          }
         }
         if (p.line) {
           if (now > p.lineUntil) {

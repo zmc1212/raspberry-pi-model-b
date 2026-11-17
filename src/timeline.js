@@ -73,16 +73,16 @@
     idx = i; pt = 0;
     var ph = phases[i];
     if (ph.id === "pop") {
-      LS8.Parts.begin(0, ["soc", "lan", "xtal", "reg", "leds", "tray"]);
+      LS8.Parts.begin(0, ["soc", "lan", "xtal", "reg", "leds", "tray"], ph.dur - 1.4);
       LS8.Labels.clearAnnounce();
     } else if (ph.id === "conn") {
-      LS8.Parts.begin(0, ["usb", "eth", "hdmi", "rca", "jack", "csi", "dsi", "pwr"]);
+      LS8.Parts.begin(0, ["usb", "eth", "hdmi", "rca", "jack", "csi", "dsi", "pwr"], ph.dur - 1.4);
     } else if (ph.id === "gpio") {
-      LS8.Parts.begin(0, ["gpio", "p5"]);
+      LS8.Parts.begin(0, ["gpio", "p5"], ph.dur - 1.4);
     } else if (ph.id === "sd") {
-      LS8.Parts.begin(0, ["sd"]);
+      LS8.Parts.begin(0, ["sd"], ph.dur - 1.4);
     } else if (ph.id === "power") {
-      LS8.Parts.begin(0, ["plug"]);
+      LS8.Parts.begin(0, ["plug"], ph.dur - 1.4);
       LS8.Cables.begin(0);
       state.power = true;
     } else if (ph.id === "kernel") {
