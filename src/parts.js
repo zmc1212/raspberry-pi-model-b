@@ -255,6 +255,7 @@
         if (t >= 1 && !p.landed) {
           p.landed = true;
           seatedCount++;
+          if (LS8.Audio) LS8.Audio.play("land");
           p.lineUntil = now + 0.55;
         }
         if (p.line) {

@@ -70,6 +70,7 @@
 
   function termType(line) {
     termLines.push(line);
+    if (LS8.Audio) LS8.Audio.play("type");
     if (termLines.length > 6) termLines.shift();
   }
   function termClear() { termLines = []; }
