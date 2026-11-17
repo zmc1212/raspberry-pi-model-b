@@ -14,6 +14,10 @@ SoC 温度表、eth0 网络。
 （pop → conn → gpio → sd → power → kernel → login → home）。
 
 ## 验收
+
+**自然播放回归（必查）**：刷新页面后不碰键盘，只看装配——已落座零件必须
+全程留在板上（只增不减），conn 阶段后计数 18，home 阶段全部飞出后循环重启。
+seek 跳段会 sealAll 掩盖飞行 bug，不能用 seek 代替此项。
 按 7（login）：终端打出 raspberrypi login → Welcome to Debian；GPIO 引脚
 跳动、eth0 拿到 192.168.1.42、SoC 温度升到 ~58°。控制台无错误。
 
