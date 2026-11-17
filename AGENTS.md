@@ -1,6 +1,6 @@
 # RASPBERRY PI MODEL B（2012）装配模拟
 
-复刻初代 Raspberry Pi Model B：BCM2835 + 256MB PoP 堆叠、LAN9512、USB 双层堆叠、
+复刻初代 Raspberry Pi Model B：BCM2835 + 512MB PoP 堆叠（rev2，含 P5 排针）、LAN9512、USB 双层堆叠、
 RJ45 磁性插座、HDMI、GPIO 26Pin、SD 卡水平插入、microUSB 电源。仪表盘：
 TTY1 启动终端（内核日志 → pi 登录 → wheezy 欢迎语）、GPIO 状态矩阵、
 SoC 温度表、eth0 网络。

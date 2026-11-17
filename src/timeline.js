@@ -4,11 +4,11 @@
     { id: "pop", name: "PoP · BCM2835 + RAM", dur: 3.6, dot: "blue",
       cam: { theta: -0.62, phi: 0.96, r: 4.4, target: [0.1, 0.15, 0.1] }, drift: 0.03 },
     { id: "conn", name: "CONNECTORS · USB ETH HDMI", dur: 4.2, dot: "teal",
-      cam: { theta: -1.7, phi: 0.95, r: 3.4, target: [0.1, 0.15, -0.3] }, drift: 0.015 },
+      cam: { theta: -1.7, phi: 0.95, r: 3.4, target: [0.35, 0.15, 0.15] }, drift: 0.015 },
     { id: "gpio", name: "GPIO · 26 PIN", dur: 3.0, dot: "teal",
       cam: { theta: -1.1, phi: 1.0, r: 3.0, target: [0.05, 0.15, -0.4] }, drift: 0.01 },
     { id: "sd", name: "SD CARD · 8 GB", dur: 2.8, dot: "yellow",
-      cam: { theta: -2.4, phi: 1.0, r: 3.2, target: [-0.9, 0.15, 0.1] }, drift: 0.01 },
+      cam: { theta: -2.4, phi: 1.0, r: 3.2, target: [-0.85, 0.05, 0.1] }, drift: 0.01 },
     { id: "power", name: "POWER ON · 5V 700MA", dur: 2.6, dot: "green",
       cam: { theta: -0.85, phi: 0.92, r: 3.8, target: [0.1, 0.15, 0.1] }, drift: 0.012 },
     { id: "kernel", name: "BOOT · KERNEL", dur: 3.6, dot: "yellow",
@@ -76,9 +76,9 @@
       LS8.Parts.begin(0, ["soc", "lan", "xtal", "reg", "leds", "tray"]);
       LS8.Labels.clearAnnounce();
     } else if (ph.id === "conn") {
-      LS8.Parts.begin(0, ["usb", "eth", "hdmi", "rca", "pwr"]);
+      LS8.Parts.begin(0, ["usb", "eth", "hdmi", "rca", "jack", "csi", "dsi", "pwr"]);
     } else if (ph.id === "gpio") {
-      LS8.Parts.begin(0, ["gpio"]);
+      LS8.Parts.begin(0, ["gpio", "p5"]);
     } else if (ph.id === "sd") {
       LS8.Parts.begin(0, ["sd"]);
     } else if (ph.id === "power") {
@@ -106,15 +106,17 @@
   }
 
   var TERM_SCRIPT = [
-    [0.4, "[    0.000000] BCM2835 init"],
-    [1.0, "[    0.412000] mmc0: SD card detected"],
-    [1.7, "[    1.128000] smsc95xx: link up, 100Mbps"],
-    [2.4, "[    2.310000] random: crng init done"],
+    [0.4, "[    0.000000] Booting Linux on physical CPU 0"],
+    [0.9, "[    0.281000] Linux version 3.1.9+ (kernel@pi)"],
+    [1.4, "[    0.412000] mmc0: SD card detected"],
+    [1.9, "[    1.128000] smsc95xx: link up, 100Mbps"],
+    [2.5, "[    2.310000] random: initializing urandom seed"],
     [3.0, "Raspbian GNU/Linux 7 raspberrypi tty1"],
     [3.8, "raspberrypi login: pi"],
-    [4.6, "Password: raspberry"],
-    [5.6, "Welcome to Debian GNU/Linux 7 (wheezy)!"],
-    [6.6, "pi@raspberrypi:~$ _"]
+    [4.6, "Password:"],
+    [5.6, "The programs included with the Debian GNU"],
+    [6.2, "/Linux system are free software..."],
+    [6.9, "pi@raspberrypi:~$ _"]
   ];
 
   function update(dt) {
@@ -144,7 +146,7 @@
         LS8.Dashboard.termType(TERM_SCRIPT[typed][1]);
         typed++;
       }
-      if (typed >= 8) state.loginDone = true;
+      if (typed >= 9) state.loginDone = true;
     }
 
     /* SoC 温度与流量 */
@@ -160,9 +162,9 @@
     dom.arm.textContent = state.power ? "700 MHZ" : "—";
     dom.temp.textContent = state.power ? state.socTemp.toFixed(0) + "°C" : "—";
     var partsN = LS8.Parts.seatedCount;
-    dom.parts.textContent = partsN + " / 15";
+    dom.parts.textContent = partsN + " / 18";
     var label = ph.name;
-    if (ph.id === "conn") label = ph.name + " · " + partsN + " / 15";
+    if (ph.id === "conn") label = ph.name + " · " + partsN + " / 18";
     dom.pill.textContent = label;
     dom.dot.className = ph.dot;
 
@@ -199,7 +201,7 @@
           typed++;
         }
         state.termT = t;
-        if (typed >= 8) state.loginDone = true;
+        if (typed >= 9) state.loginDone = true;
         if (i >= 7) state.rxKb = 512;
       }
     },

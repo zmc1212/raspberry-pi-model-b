@@ -34,7 +34,7 @@
       '<div class="iq-stats" style="clear:both">' +
       '<div class="r"><span>CORE</span><b id="soc-freq">—</b></div>' +
       '<div class="r"><span>VOLT</span><b id="soc-volt">—</b></div>' +
-      '<div class="r"><span>MEM</span><b>256 MB</b></div>' +
+      '<div class="r"><span>MEM</span><b>512 MB</b></div>' +
       '<div class="iq-chips" style="margin-top:auto"><span class="chip" id="ch-gpu">GPU OK</span><span class="chip" id="ch-lx">LINUX</span></div>' +
       '</div></div></section>' +
 
@@ -98,7 +98,8 @@
     }
   }
 
-  var GPIO_ACT = [3, 5, 7, 11, 12, 13, 15, 16, 18, 22];
+  /* PWM 硬件引脚仅 BCM18 = 物理 12（rev2），blink 只动这一脚 */
+  var GPIO_ACT = [12];
 
   function update(st, dt) {
     drawTerm(st);
@@ -110,7 +111,7 @@
         ? (Math.sin(st.time * (3 + i % 4)) > 0 ? "#e8c53c" : "#c89a20")
         : "rgba(232,228,216,.12)";
     }
-    dom.gpioNote.textContent = st.loginDone ? "OUT · PWM BLINK" : "HI-Z";
+    dom.gpioNote.textContent = st.loginDone ? "OUT · PWM BLINK · BCM18" : "HI-Z";
     dom.gpioAct.textContent = act.length + " ACTIVE";
 
     var frac = Math.max(0, Math.min(1, (st.socTemp - 30) / 30));

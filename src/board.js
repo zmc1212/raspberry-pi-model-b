@@ -86,7 +86,7 @@
     M.white = new THREE.MeshStandardMaterial({ color: 0xf2f0ea, roughness: 0.4 });
     M.chip = new THREE.MeshStandardMaterial({ color: 0x111318, roughness: 0.4, metalness: 0.2 });
     M.rpiGreen = new THREE.MeshStandardMaterial({
-      map: LS8.Textures.pcb("#2e9e5b", "rgba(10,50,30,0.5)", "Raspberry Pi (C)", "MODEL B · BCM2835"),
+      map: LS8.Textures.pcb("#2e9e5b", "rgba(96,200,130,0.42)", "Raspberry Pi (C)", "MODEL B REV 2.0 · (C) 2012"),
       roughness: 0.62
     });
 
@@ -98,16 +98,16 @@
 
     g.add(mesh(new THREE.BoxGeometry(1.72, 0.035, 1.1), M.rpiGreen, 0, 0.018, 0));
 
-    // 安装孔（4 角圆孔感 → 小银圈）
-    [[-0.78, -0.47], [0.78, -0.47], [-0.78, 0.47], [0.78, 0.47]].forEach(function (p) {
+    // 安装孔（rev2 非对称内缩真实位置）
+    [[-0.73, -0.35], [0.74, -0.4], [-0.7, 0.44], [0.74, 0.41]].forEach(function (p) {
       g.add(mesh(new THREE.CylinderGeometry(0.03, 0.03, 0.012, 10), M.gold, p[0], 0.04, p[1]));
     });
     // GPIO 焊盘排（顶缘预置焊点）
     for (var i = 0; i < 13; i++) {
       g.add(mesh(new THREE.BoxGeometry(0.025, 0.012, 0.05), M.gold, -0.42 + i * 0.07, 0.04, -0.5));
     }
-    // SD 卡槽缝（左缘）
-    g.add(mesh(new THREE.BoxGeometry(0.03, 0.025, 0.55), M.dark, -0.86, 0.04, 0.05));
+    // SD 卡槽缝（底面，真实 Model B 卡从下方插入）
+    g.add(mesh(new THREE.BoxGeometry(0.03, 0.025, 0.55), M.dark, -0.86, 0.002, 0.05));
     // 小散件
     for (var c = 0; c < 8; c++) {
       g.add(mesh(new THREE.BoxGeometry(0.06, 0.02, 0.04), M.chip, -0.3 + (c % 4) * 0.2, 0.04, 0.3 + Math.floor(c / 4) * 0.12));

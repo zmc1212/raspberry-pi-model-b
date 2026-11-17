@@ -34,8 +34,8 @@
         yaw: yaw || 0, anchorY: anchorY, delay: delay || 0, mid: mid || null });
     }
 
-    /* 1 · BCM2835 SoC + PoP RAM（两层堆叠） */
-    def("soc", "BCM2835 + RAM", "PoP · 256 MB", [0.1, 0.115, -0.05], 0.06, 0.16,
+    /* 1 · BCM2835 SoC + PoP RAM（两层堆叠，rev2 512MB） */
+    def("soc", "BCM2835 + RAM", "PoP · 512 MB", [0.1, 0.115, -0.05], 0.06, 0.16,
       function () {
         var g = new THREE.Group();
         g.add(mesh(new THREE.BoxGeometry(0.3, 0.035, 0.3), M.chip, 0, 0.02, 0));
@@ -48,18 +48,18 @@
         var g = new THREE.Group();
         g.add(mesh(new THREE.BoxGeometry(0.24, 0.03, 0.24), M.chip, 0, 0.015, 0));
         return g;
-      })(); }, 1);
-    /* 3-4 · USB-A 双层堆叠 */
-    def("usb", "USB x2", "DUAL STACK", [-0.15, 0.115, -0.42], 0.04, 0.14,
+      })(); }, 0.6);
+    /* 3 · USB-A 双层堆叠（右缘，RJ45 下方） */
+    def("usb", "USB x2", "DUAL STACK", [0.76, 0.115, 0.08], -Math.PI / 2, 0.14,
       function () {
         var g = new THREE.Group();
         g.add(mesh(new THREE.BoxGeometry(0.34, 0.09, 0.16), M.silver, 0, 0.05, 0));
         g.add(mesh(new THREE.BoxGeometry(0.34, 0.09, 0.16), M.silver, 0, 0.14, 0));
         g.add(mesh(new THREE.BoxGeometry(0.3, 0.06, 0.02), M.dark, 0, 0.1, -0.08));
         return g;
-      }, 2);
-    /* 5 · RJ45 以太网口 */
-    def("eth", "RJ45 MAGJACK", "10/100 + LED", [0.42, 0.115, -0.42], 0.02, 0.14,
+      }, 0.5);
+    /* 4 · RJ45 以太网口（右缘上部，与 USB 相邻——真实 Model B 布局） */
+    def("eth", "RJ45 MAGJACK", "10/100 + LED", [0.76, 0.115, -0.28], -Math.PI / 2, 0.14,
       function () {
         var g = new THREE.Group();
         g.add(mesh(new THREE.BoxGeometry(0.36, 0.14, 0.17),
@@ -68,23 +68,46 @@
         g.add(mesh(new THREE.CylinderGeometry(0.012, 0.012, 0.02, 8),
           new THREE.MeshStandardMaterial({ color: 0xffd23c, emissive: 0xffd23c, emissiveIntensity: 0, roughness: 0.3 }), 0.12, 0.12, -0.086).rotateX(Math.PI / 2));
         return g;
-      }, 3);
-    /* 6 · HDMI */
-    def("hdmi", "HDMI TYPE A", "19 PIN", [-0.55, 0.115, -0.35], 0.02, 0.12,
+      }, 1.0);
+    /* 5 · HDMI（下缘中部） */
+    def("hdmi", "HDMI TYPE A", "19 PIN", [0.25, 0.115, 0.52], Math.PI, 0.12,
       function () {
         var g = new THREE.Group();
         g.add(mesh(new THREE.BoxGeometry(0.26, 0.07, 0.15), M.silver, 0, 0.04, 0));
         g.add(mesh(new THREE.BoxGeometry(0.22, 0.03, 0.02), M.dark, 0, 0.05, -0.075));
         return g;
-      }, 4);
-    /* 7 · RCA 视频 */
-    def("rca", "RCA VIDEO", "COMPOSITE", [-0.2, 0.115, -0.28], 0.1, 0.1,
+      }, 1.5);
+    /* 6 · RCA 视频（下缘左） */
+    def("rca", "RCA VIDEO", "COMPOSITE", [-0.6, 0.115, 0.52], 0, 0.1,
       function () {
         var g = new THREE.Group();
         g.add(mesh(new THREE.CylinderGeometry(0.045, 0.045, 0.05, 12),
           new THREE.MeshStandardMaterial({ color: 0xe8b93c, roughness: 0.4 }), 0, 0.03, 0));
         return g;
-      }, 5);
+      }, 2.0);
+    /* 6b · 3.5mm 音频 jack（下缘，RCA 与电源之间） */
+    def("jack", "3.5MM AUDIO", "4-POLE · AV JACK", [-0.42, 0.115, 0.52], 0, 0.1,
+      function () {
+        var g = new THREE.Group();
+        g.add(mesh(new THREE.CylinderGeometry(0.03, 0.03, 0.05, 10), M.plastic, 0, 0.03, 0));
+        g.add(mesh(new THREE.CylinderGeometry(0.012, 0.012, 0.02, 8), M.dark, 0, 0.05, 0));
+        return g;
+      }, 2.8);
+    /* 6c · CSI / DSI FFC 座（上缘 GPIO 侧） */
+    def("csi", "CSI CAMERA", "FFC · 26 PIN", [-0.3, 0.115, -0.42], 0, 0.1,
+      function () {
+        var g = new THREE.Group();
+        g.add(mesh(new THREE.BoxGeometry(0.18, 0.045, 0.07), M.white, 0, 0.028, 0));
+        g.add(mesh(new THREE.BoxGeometry(0.14, 0.02, 0.02), M.dark, 0, 0.05, 0));
+        return g;
+      }, 3.1);
+    def("dsi", "DSI DISPLAY", "FFC · 15 PIN", [-0.05, 0.115, -0.42], 0, 0.1,
+      function () {
+        var g = new THREE.Group();
+        g.add(mesh(new THREE.BoxGeometry(0.14, 0.045, 0.07), M.white, 0, 0.028, 0));
+        g.add(mesh(new THREE.BoxGeometry(0.1, 0.02, 0.02), M.dark, 0, 0.05, 0));
+        return g;
+      }, 3.4);
     /* 8 · GPIO 26Pin 排针 */
     def("gpio", "GPIO HEADER", "26 PIN · 2x13", [0.05, 0.115, -0.5], 0, 0.14,
       function () {
@@ -96,23 +119,34 @@
         }
         return g;
       }, 6);
-    /* 9 · microUSB 电源座 */
-    def("pwr", "MICRO USB PWR", "5V 700MA", [-0.78, 0.115, -0.32], 0, 0.1,
+    /* 9 · microUSB 电源座（下缘左，真实位置） */
+    def("pwr", "MICRO USB PWR", "5V 700MA", [-0.24, 0.115, 0.52], 0, 0.1,
       function () {
         var g = new THREE.Group();
         g.add(mesh(new THREE.BoxGeometry(0.12, 0.06, 0.09), M.plastic, 0, 0.03, 0));
         return g;
-      }, 7);
-    /* 10 · SD 卡（从左侧水平插入） */
-    def("sd", "SD CARD", "8 GB CLASS 4", [-0.72, 0.115, 0.15], 0, 0.1,
+      }, 2.5);
+    /* 10 · SD 卡（底面插槽，从下方压入——真实 Model B 布局） */
+    def("sd", "SD CARD", "8 GB CLASS 4 · 底面插槽", [-0.72, 0.078, 0.15], 0, 0.1,
       function () {
         var g = new THREE.Group();
         g.add(mesh(new THREE.BoxGeometry(0.24, 0.03, 0.32),
           new THREE.MeshStandardMaterial({ color: 0x2f5fa8, roughness: 0.45 }), 0, 0, 0));
         return g;
-      }, 8, { mid: [-1.15, 0.115, 0.15] });
-    /* 11 · 状态 LED 组 */
-    def("leds", "STATUS LEDs", "OK · PWR", [0.72, 0.112, 0.42], -0.15, 0.08,
+      }, 0.3, { mid: [-1.15, 0.078, 0.15] });
+    /* 10b · P5 排针（rev2 特有，底面 2x4） */
+    def("p5", "P5 HEADER", "REV2 · 2x4 · 底面", [-0.45, 0.078, -0.42], Math.PI, 0.08,
+      function () {
+        var g = new THREE.Group();
+        g.add(mesh(new THREE.BoxGeometry(0.18, 0.045, 0.08), M.plastic, 0, 0.024, 0));
+        for (var i = 0; i < 4; i++) {
+          g.add(mesh(new THREE.BoxGeometry(0.02, 0.05, 0.02), M.gold, -0.06 + i * 0.04, 0.06, -0.02));
+          g.add(mesh(new THREE.BoxGeometry(0.02, 0.05, 0.02), M.gold, -0.06 + i * 0.04, 0.06, 0.02));
+        }
+        return g;
+      }, 0.9);
+    /* 11 · 状态 LED（ACT 绿 + PWR 红，HDMI/电源角——rev2 真实位置） */
+    def("leds", "STATUS LEDs", "ACT · PWR · REV2", [-0.5, 0.112, 0.44], -0.15, 0.08,
       function () {
         var g = new THREE.Group();
         g.add(mesh(new THREE.BoxGeometry(0.05, 0.02, 0.03),
@@ -120,22 +154,22 @@
         g.add(mesh(new THREE.BoxGeometry(0.05, 0.02, 0.03),
           new THREE.MeshStandardMaterial({ color: 0xff3b30, emissive: 0xff3b30, emissiveIntensity: 0, roughness: 0.3 }), 0.035, 0, 0));
         return g;
-      }, 9);
+      }, 2.4);
     /* 12 · 晶振 */
     def("xtal", "CRYSTAL 25 MHZ", "LAN REF", [0.72, 0.115, 0.2], 0.4, 0.1,
       function () {
         var g = new THREE.Group();
         g.add(mesh(new THREE.CylinderGeometry(0.025, 0.025, 0.08, 10), M.silver, 0, 0, 0).rotateX(Math.PI / 2));
         return g;
-      }, 10);
-    /* 13 · 电源稳压器 */
-    def("reg", "3.3V/1.8V REG", "BUCK SMD", [-0.5, 0.115, 0.3], 0.1, 0.08,
+      }, 1.2);
+    /* 13 · 电源稳压器组 */
+    def("reg", "5V LDO + BUCKS", "NCP1117 · 3.3V/1.8V", [-0.5, 0.115, 0.3], 0.1, 0.08,
       function () {
         var g = new THREE.Group();
         g.add(mesh(new THREE.BoxGeometry(0.12, 0.03, 0.08), M.dark, 0, 0.015, 0));
         g.add(mesh(new THREE.BoxGeometry(0.08, 0.035, 0.1), M.chip, 0.11, 0.017, 0));
         return g;
-      }, 11);
+      }, 1.8);
     /* 14 · microUSB 电源线插头（带短线） */
     def("plug", "5V PSU PLUG", "MICRO USB", [-1.5, 0.093, -0.4], 0.15, 0.1,
       function () {
@@ -143,7 +177,7 @@
         g.add(mesh(new THREE.BoxGeometry(0.2, 0.1, 0.14), M.plastic, 0, 0.05, 0));
         g.add(mesh(new THREE.CylinderGeometry(0.014, 0.014, 0.03, 8), M.dark, 0.08, 0.08, 0).rotateZ(Math.PI / 2));
         return g;
-      }, 12);
+      }, 0.4);
     /* 15 · 螺丝盒 */
     def("tray", "SCREWS", "M2.5", [-2.4, 0.093, 1.6], -0.25, 0.16,
       function () {
@@ -157,7 +191,7 @@
           g.add(s);
         }
         return g;
-      }, 13);
+      }, 0);
 
     return defs;
   }
