@@ -18,33 +18,33 @@
 
   function buildDOM() {
     document.getElementById("dash").innerHTML =
-      '<section class="panel"><header><i class="dot" style="background:#3ddc6f"></i><b>CONSOLE</b><span class="meta">TTY1 · 80x24</span></header>' +
+      '<section class="panel"><header><i class="dot" style="background:#3ddc6f"></i><b>启动终端</b><span class="meta">CONSOLE · TTY1 · 80x24</span></header>' +
       '<div class="body"><canvas id="c-term"></canvas></div></section>' +
 
-      '<section class="panel"><header><i class="dot" style="background:#e8c53c"></i><b>GPIO · 26 PIN</b><span class="meta">REV 2 · 3.3V LOGIC</span></header>' +
+      '<section class="panel"><header><i class="dot" style="background:#e8c53c"></i><b>GPIO 排针</b><span class="meta">26 PIN · REV 2 · 3.3V LOGIC</span></header>' +
       '<div class="body"><div style="display:grid;grid-template-columns:repeat(13,1fr);gap:3px" id="gpio-grid"></div>' +
       '<div class="axis"><span>1 — 13</span><span>14 — 26</span></div>' +
-      '<div class="axis"><span id="gpio-note">HI-Z</span><span id="gpio-act">0 ACTIVE</span></div></div></section>' +
+      '<div class="axis"><span id="gpio-note">高阻态 HI-Z</span><span id="gpio-act">0 个活动引脚</span></div></div></section>' +
 
-      '<section class="panel"><header><i class="dot orange" style="background:#f2a53a"></i><b>SoC · BCM2835</b><span class="meta">ARM11 · VideoCore IV</span></header>' +
+      '<section class="panel"><header><i class="dot orange" style="background:#f2a53a"></i><b>SoC 核心</b><span class="meta">BCM2835 · ARM11 · VideoCore IV</span></header>' +
       '<div class="body"><svg viewBox="0 0 84 66" style="width:64px;height:50px;display:block;float:left">' +
       '<path d="M10 52 A26 26 0 0 1 74 52" fill="none" stroke="rgba(232,228,216,.14)" stroke-width="7" stroke-linecap="round"/>' +
       '<path id="soc-arc" d="M10 52 A26 26 0 0 1 74 52" fill="none" stroke="#f2a53a" stroke-width="7" stroke-linecap="round" stroke-dasharray="0 999"/></svg>' +
       '<div style="font-size:15px;font-weight:700;margin-top:-30px;text-align:center;position:relative" id="soc-temp">41°</div>' +
       '<div class="iq-stats" style="clear:both">' +
-      '<div class="r"><span>CORE</span><b id="soc-freq">—</b></div>' +
-      '<div class="r"><span>VOLT</span><b id="soc-volt">—</b></div>' +
-      '<div class="r"><span>MEM</span><b>512 MB</b></div>' +
-      '<div class="iq-chips" style="margin-top:auto"><span class="chip" id="ch-gpu">GPU OK</span><span class="chip" id="ch-lx">LINUX</span></div>' +
+      '<div class="r"><span>主频 CORE</span><b id="soc-freq">—</b></div>' +
+      '<div class="r"><span>电压 VOLT</span><b id="soc-volt">—</b></div>' +
+      '<div class="r"><span>内存 MEM</span><b>512 MB</b></div>' +
+      '<div class="iq-chips" style="margin-top:auto"><span class="chip" id="ch-gpu">GPU 正常</span><span class="chip" id="ch-lx">LINUX</span></div>' +
       '</div></div></section>' +
 
-      '<section class="panel"><header><i class="dot" style="background:#5b8cff"></i><b>NET eth0</b><span class="meta">LAN9512 · 100BASE</span></header>' +
+      '<section class="panel"><header><i class="dot" style="background:#5b8cff"></i><b>eth0 网络</b><span class="meta">LAN9512 · 100BASE</span></header>' +
       '<div class="body"><div class="iq-stats" style="height:80px">' +
-      '<div class="r"><span>LINK</span><b id="net-link">DOWN</b></div>' +
+      '<div class="r"><span>链路 LINK</span><b id="net-link">断开</b></div>' +
       '<div class="r"><span>IP</span><b id="net-ip">—</b></div>' +
-      '<div class="r"><span>RX</span><b id="net-rx">0 KB</b></div>' +
+      '<div class="r"><span>接收 RX</span><b id="net-rx">0 KB</b></div>' +
       '<div class="r"><span>SSH</span><b id="net-ssh">—</b></div>' +
-      '<div class="iq-chips" style="margin-top:auto"><span class="chip" id="ch-lnk">LINK</span><span class="chip" id="ch-ssh">SSH</span></div>' +
+      '<div class="iq-chips" style="margin-top:auto"><span class="chip" id="ch-lnk">已连接</span><span class="chip" id="ch-ssh">SSH</span></div>' +
       '</div></div></section>';
 
     var grid = document.getElementById("gpio-grid");
@@ -82,7 +82,7 @@
     if (!st.bootOn) {
       ctx.fillStyle = "rgba(232,228,216,0.18)";
       ctx.font = "9px monospace";
-      ctx.fillText("— NO SIGNAL —", 10, H / 2);
+      ctx.fillText("— 无信号 —", 10, H / 2);
       return;
     }
     ctx.font = "9.5px monospace";
@@ -111,8 +111,8 @@
         ? (Math.sin(st.time * (3 + i % 4)) > 0 ? "#e8c53c" : "#c89a20")
         : "rgba(232,228,216,.12)";
     }
-    dom.gpioNote.textContent = st.loginDone ? "OUT · PWM BLINK · BCM18" : "HI-Z";
-    dom.gpioAct.textContent = act.length + " ACTIVE";
+    dom.gpioNote.textContent = st.loginDone ? "输出 · PWM 闪烁 · BCM18" : "高阻态 HI-Z";
+    dom.gpioAct.textContent = act.length + " 个活动引脚";
 
     var frac = Math.max(0, Math.min(1, (st.socTemp - 30) / 30));
     dom.arc.setAttribute("stroke-dasharray", (frac * 81.7) + " 999");
@@ -123,11 +123,11 @@
     dom.lx.className = "chip" + (st.loginDone ? " lock" : "");
 
     var up = st.loginDone;
-    dom.link.textContent = up ? "100 FD" : (st.power ? "DOWN" : "—");
+    dom.link.textContent = up ? "100 FD" : (st.power ? "断开" : "—");
     dom.link.style.color = up ? "#57c46b" : "rgba(232,228,216,0.6)";
     dom.ip.textContent = up ? "192.168.1.42" : "—";
     dom.rx.textContent = up ? Math.floor(st.rxKb) + " KB" : "0 KB";
-    dom.ssh.textContent = up ? "PORT 22" : "—";
+    dom.ssh.textContent = up ? "端口 22" : "—";
     dom.lnk.className = "chip" + (up ? " on" : "");
     dom.sshC.className = "chip" + (up ? " lock" : "");
   }

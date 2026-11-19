@@ -34,6 +34,8 @@
       } else if (e.code === "KeyR") {
         LS8.Timeline.restart();
         document.getElementById("phase-text").style.opacity = "1";
+      } else if (e.code === "KeyD") {
+        document.body.classList.toggle("no-dash");
       } else if (/^Digit[1-8]$/.test(e.code)) {
         var ids = LS8.Timeline.phaseIds;
         LS8.Timeline.seek(ids[Number(e.code.slice(5)) - 1]);

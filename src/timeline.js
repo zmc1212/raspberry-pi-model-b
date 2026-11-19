@@ -1,42 +1,42 @@
 /* 时间线：PoP 堆叠 → 连接器 → GPIO → SD 卡 → 上电 → 内核 → 登录 → 归位 */
 (function (LS8) {
   var phases = [
-    { id: "pop", name: "PoP · BCM2835 + RAM", dur: 3.6, dot: "blue",
+    { id: "pop", name: "PoP 堆叠 · BCM2835 + RAM", dur: 3.6, dot: "blue",
       cam: { theta: -0.62, phi: 0.96, r: 4.4, target: [0.1, 0.15, 0.1] }, drift: 0.03 },
-    { id: "conn", name: "CONNECTORS · USB ETH HDMI", dur: 4.2, dot: "teal",
+    { id: "conn", name: "连接器接入 · USB ETH HDMI", dur: 4.2, dot: "teal",
       cam: { theta: -1.7, phi: 0.95, r: 3.4, target: [0.35, 0.15, 0.15] }, drift: 0.015 },
-    { id: "gpio", name: "GPIO · 26 PIN", dur: 3.0, dot: "teal",
+    { id: "gpio", name: "GPIO 排针 · 26 PIN", dur: 3.0, dot: "teal",
       cam: { theta: -1.1, phi: 1.0, r: 3.0, target: [0.05, 0.15, -0.4] }, drift: 0.01 },
-    { id: "sd", name: "SD CARD · 8 GB", dur: 2.8, dot: "yellow",
+    { id: "sd", name: "SD 卡插入 · 8 GB", dur: 2.8, dot: "yellow",
       cam: { theta: -2.4, phi: 1.0, r: 3.2, target: [-0.85, 0.05, 0.1] }, drift: 0.01 },
-    { id: "power", name: "POWER ON · 5V 700MA", dur: 2.6, dot: "green",
+    { id: "power", name: "通电 · 5V 700MA", dur: 2.6, dot: "green",
       cam: { theta: -0.85, phi: 0.92, r: 3.8, target: [0.1, 0.15, 0.1] }, drift: 0.012 },
-    { id: "kernel", name: "BOOT · KERNEL", dur: 3.6, dot: "yellow",
+    { id: "kernel", name: "内核启动 · KERNEL", dur: 3.6, dot: "yellow",
       cam: { theta: -1.5, phi: 1.02, r: 4.2, target: [0.1, 0.15, 0.1] }, drift: 0.01 },
-    { id: "login", name: "LOGIN · PI", dur: 3.4, dot: "pink",
+    { id: "login", name: "登录终端 · PI", dur: 3.4, dot: "pink",
       cam: { theta: -0.75, phi: 0.94, r: 4.8, target: [0.1, 0.15, 0.1] }, drift: 0.02 },
-    { id: "home", name: "PARTS HOME", dur: 5.0, dot: "yellow",
+    { id: "home", name: "零件归位", dur: 5.0, dot: "yellow",
       cam: { theta: -0.62, phi: 1.0, r: 7.0, target: [0.1, 0.2, 0.1] }, drift: 0.03 }
   ];
 
   var PINNED = {
     pop: function () {
-      return [{ id: "p-soc", obj: LS8.Parts.group("soc"), text: "PoP · ARM11 + 256MB" }];
+      return [{ id: "p-soc", obj: LS8.Parts.group("soc"), text: "PoP 堆叠芯片", sub: "POP · ARM11 + 256MB" }];
     },
     conn: function () {
       return [
-        { id: "p-eth", obj: LS8.Parts.group("eth"), text: "LAN9512 · MAGJACK" },
-        { id: "p-us", obj: LS8.Parts.group("usb"), text: "USB DUAL STACK", tone: "white" }
+        { id: "p-eth", obj: LS8.Parts.group("eth"), text: "以太网网口", sub: "LAN9512 · MAGJACK" },
+        { id: "p-us", obj: LS8.Parts.group("usb"), text: "USB 双层堆叠", sub: "USB DUAL STACK", tone: "white" }
       ];
     },
     gpio: function () {
-      return [{ id: "p-gp", obj: LS8.Parts.group("gpio"), text: "GPIO · 26 PIN" }];
+      return [{ id: "p-gp", obj: LS8.Parts.group("gpio"), text: "GPIO 排针", sub: "GPIO · 26 PIN" }];
     },
     sd: function () {
-      return [{ id: "p-sd", obj: LS8.Parts.group("sd"), text: "SD · RASPBIAN" }];
+      return [{ id: "p-sd", obj: LS8.Parts.group("sd"), text: "SD 卡就位", sub: "SD · RASPBIAN" }];
     },
     login: function () {
-      return [{ id: "p-pl", obj: LS8.Parts.group("plug"), text: "5V · 700 MA" }];
+      return [{ id: "p-pl", obj: LS8.Parts.group("plug"), text: "microUSB 电源", sub: "5V · 700 MA" }];
     }
   };
 
@@ -157,7 +157,7 @@
     if (state.power && !powerOnAt) powerOnAt = state.time;
 
     /* DOM */
-    dom.mode.textContent = state.loginDone ? "UP" : (state.bootOn ? "BOOT" : (state.power ? "READY" : "OFF"));
+    dom.mode.textContent = state.loginDone ? "在线 UP" : (state.bootOn ? "启动 BOOT" : (state.power ? "就绪 READY" : "关机 OFF"));
     dom.mode.className = "mode" + (state.loginDone ? " lock" : "");
     dom.arm.textContent = state.power ? "700 MHZ" : "—";
     dom.temp.textContent = state.power ? state.socTemp.toFixed(0) + "°C" : "—";

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>RASPBERRY PI MODEL B · 2012 — 装配模拟</title>
+<title>树莓派 MODEL B · 2012 — 装配模拟</title>
 <link rel="icon" href="data:,">
 <link rel="stylesheet" href="src/styles.css">
 </head>
@@ -13,21 +13,22 @@
   <div id="frame-dashed"></div>
 
   <div id="card-title" class="card">
-    <div class="t1">RASPBERRY PI&ensp;·&ensp;MODEL B&ensp;·&ensp;BCM2835</div>
-    <div class="t2">Fig. 06 — one ARM11, 512 MB of PoP RAM, and a credit-card-sized computer</div>
+    <div class="t1">树莓派&ensp;·&ensp;MODEL B&ensp;·&ensp;BCM2835</div>
+    <div class="t1-en">RASPBERRY PI · MODEL B</div>
+    <div class="t2">图 06 — 一颗 ARM11、512 MB PoP 内存，和一台信用卡大小的计算机</div>
     <div class="t3">拖动旋转 · 滚轮缩放 · 点击零件看标签 · 空格暂停 · R 重播 · 数字键 1-8 跳阶段</div>
   </div>
 
   <div id="card-status" class="card">
-    <div class="k">MODE</div>
-    <div class="mode" id="st-mode">OFF</div>
-    <div class="row"><span class="k">ARM</span><b id="st-arm">—</b></div>
-    <div class="row"><span class="k">TEMP</span><b id="st-temp">—</b></div>
-    <div class="row"><span class="k">PARTS</span><b id="st-parts">0 / 18</b></div>
+    <div class="k">模式 MODE</div>
+    <div class="mode" id="st-mode">关机 OFF</div>
+    <div class="row"><span class="k">主频 ARM</span><b id="st-arm">—</b></div>
+    <div class="row"><span class="k">温度 TEMP</span><b id="st-temp">—</b></div>
+    <div class="row"><span class="k">零件 PARTS</span><b id="st-parts">0 / 18</b></div>
   </div>
 
-  <div id="phase-pill"><i id="phase-dot"></i><span id="phase-text">STANDBY</span></div>
-  <div id="corner-left" class="corner">RPI-B · 700 MHZ · 512 MB</div>
+  <div id="phase-pill"><i id="phase-dot"></i><span id="phase-text">待机 STANDBY</span></div>
+  <div id="corner-left" class="corner">树莓派 RPI-B · 700 MHZ · 512 MB</div>
   <div id="corner-right" class="corner">BCM2835 · REV 2 · 2012</div>
 
   <div id="dash"></div>
@@ -67,5 +68,6 @@
   }, 6000);
 })();
 </script>
+  <script>if (new URLSearchParams(location.search).get("dash") === "0") document.body.classList.add("no-dash");</script>
 </body>
 </html>
