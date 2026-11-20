@@ -1,38 +1,43 @@
-/* WebAudio 合成音效（零素材）。默认静音：首次点击/按键自动启用，右上角按钮可切换。 */
+/* WebAudio 合成音效（零素材）。默认开启：页面加载即尝试出声（浏览器自动播放策略可能
+   拦截未交互页面，被拦截时首次点击/按键/触摸页面立即恢复），右上角按钮可开关。 */
 (function (NS) {
   if (!NS || NS.Audio) return;
-  var ctx = null, master = null, enabled = false, unlocked = false, btn = null;
+  var ctx = null, master = null, enabled = true, btn = null;
 
   function ensure() {
     if (ctx) return true;
     var AC = window.AudioContext || window.webkitAudioContext;
     if (!AC) return false;
     ctx = new AC();
+    ctx.onstatechange = refresh; // 自动播放被放行/拦截时同步按钮提示
     master = ctx.createGain();
-    master.gain.value = 0;
+    master.gain.value = enabled ? 0.5 : 0;
     master.connect(ctx.destination);
     return true;
   }
 
   function refresh() {
-    if (btn) btn.textContent = enabled ? "🔊" : "🔇";
+    if (btn) {
+      btn.textContent = enabled ? "🔊" : "🔇";
+      if (btn.classList) btn.classList.toggle("audio-wait", enabled && (!ctx || ctx.state === "suspended"));
+    }
     if (master) master.gain.value = enabled ? 0.5 : 0;
   }
 
-  function unlock() {
-    if (!unlocked) {
-      if (!ensure()) return;
-      if (ctx.state === "suspended") ctx.resume();
-      unlocked = true;
-      enabled = true;
-      refresh();
-    } else if (ctx && ctx.state === "suspended") ctx.resume();
+  function resume() {
+    if (!ensure()) return;
+    if (ctx.state === "suspended" && ctx.resume) {
+      var p = ctx.resume();
+      if (p && p.catch) p.catch(function () {});
+    }
+    refresh();
   }
 
+  function unlock() { resume(); }
+
   function toggle() {
-    unlock();
-    if (!unlocked) return;
     enabled = !enabled;
+    if (enabled) resume();
     refresh();
   }
 
@@ -85,23 +90,26 @@
   };
 
   function play(name, a, b, c) {
-    if (!enabled || !SFX[name]) return;
+    if (!enabled || !ctx || ctx.state !== "running" || !SFX[name]) return;
     try { SFX[name](a, b, c); } catch (e) { /* 音频失败不影响页面 */ }
   }
 
   function init() {
     var stl = document.createElement("style");
-    stl.textContent = ".audio-toggle{position:absolute;top:168px;right:28px;z-index:8;width:34px;height:34px;border-radius:50%;border:1px solid rgba(35,40,48,.3);background:rgba(251,248,238,.92);font-size:15px;line-height:1;cursor:pointer;box-shadow:0 2px 8px rgba(30,24,8,.2)}";
+    stl.textContent = ".audio-toggle{position:absolute;top:168px;right:28px;z-index:8;width:34px;height:34px;border-radius:50%;border:1px solid rgba(35,40,48,.3);background:rgba(251,248,238,.92);font-size:15px;line-height:1;cursor:pointer;box-shadow:0 2px 8px rgba(30,24,8,.2)}"
+      + ".audio-toggle.audio-wait::after{content:\"点击页面任意处开启声音\";position:absolute;top:50%;right:44px;transform:translateY(-50%);white-space:nowrap;font-size:11px;color:#6E5A32;background:rgba(251,248,238,.92);border:1px solid rgba(35,40,48,.25);border-radius:4px;padding:3px 8px;pointer-events:none}";
     document.head.appendChild(stl);
     btn = document.createElement("button");
     btn.className = "audio-toggle";
-    btn.textContent = "🔇";
-    btn.title = "声音开关（首次交互自动开启）";
+    btn.textContent = "🔊";
+    btn.title = "声音开关（默认开启；浏览器拦截自动播放时，点击页面任意处即生效）";
     btn.addEventListener("click", function (e) { e.stopPropagation(); toggle(); });
     var sheet = document.getElementById("sheet");
     if (sheet) sheet.appendChild(btn);
     window.addEventListener("pointerdown", unlock);
     window.addEventListener("keydown", unlock);
+    window.addEventListener("touchstart", unlock, { passive: true });
+    resume(); // 页面加载即尝试启动声音：浏览器放行则立刻有声，拦截则首次交互自动恢复
   }
 
   if (document.readyState === "loading") {
